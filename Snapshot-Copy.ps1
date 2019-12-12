@@ -1,3 +1,5 @@
+#copy snapshot of a managed disk to same or different subscription
+
 #Provide the subscription Id of the subscription where snapshot exists
 $sourceSubscriptionId='yourSourceSubscriptionId'
 
