@@ -9,7 +9,6 @@ $dHost = New-AzHost `
 
 #TODO: add check of hosts remaining resources
 
-
 #create a VM on that host:
 $cred = Get-Credential
 New-AzVM `
@@ -21,12 +20,8 @@ New-AzVM `
    -Image Win2016Datacenter `
    -Zone 1 `
    -Size Standard_D4s_v3
-
-
    
 #TODO: add check if VM will fit, if not, suggest size that will fit
-
-
 
 #Check status of the host:
 Get-AzHost `
