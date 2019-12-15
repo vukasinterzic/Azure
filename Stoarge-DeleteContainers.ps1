@@ -22,14 +22,14 @@ $ctx = $storageAccount.Context
 
 # list all containers in the storage account 
 Write-Host "All containers"
-Get-AzStorageContainer -Context $ctx | select Name
+Get-AzStorageContainer -Context $ctx | Select-Object Name
 
 # retrieve list of containers to delete
 $listOfContainersToDelete = Get-AzStorageContainer -Context $ctx -Prefix $prefix
 
 # write list of containers to be deleted 
 Write-Host "Containers to be deleted"
-$listOfContainersToDelete | select Name
+$listOfContainersToDelete | Select-Object Name
 
 # delete the containers; this pipes the result of the listing of the containers to delete
 #    into the Remove-AzStorageContainer command. It handles all of the containers in the list.
@@ -38,4 +38,4 @@ $listOfContainersToDelete | Remove-AzStorageContainer -Context $ctx
 
 # show list of containers not deleted 
 Write-Host "All containers not deleted"
-Get-AzStorageContainer -Context $ctx | select Name
+Get-AzStorageContainer -Context $ctx | Select-Object Name
