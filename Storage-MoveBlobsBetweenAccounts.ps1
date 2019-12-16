@@ -56,13 +56,13 @@ param (
 # Create and check Storage context
 $Error.Clear()
 $srcCtx = New-AzStorageContext -StorageAccountName $srcStorageAccountName -StorageAccountKey $srcStorageAccountKey
-if ($srcCtx -eq $null)
+if ($null -eq $srcCtx)
 {
     Write-Error "Script could not create source Storage Context, possibly due to invalid StorageAccountName or StorageAccount Key terminating: $Error[0]";
     return;
 }
 $destCtx = New-AzStorageContext -StorageAccountName $destStorageAccountName -StorageAccountKey $destStorageAccountKey
-if ($destCtx -eq $null)
+if ($null -eq $destCtx)
 {
     Write-Error "Script could not create destination storage context, possibly due to invalid StorageAccountName or StorageAccount Key terminating: $Error[0]";
     return;
@@ -199,7 +199,7 @@ do{
         break;
     }
 }
-While ($Token -ne $Null)
+While ($Null -ne $Token)
 
 # Summary the copy result
 if ($CopyContainerFail)
