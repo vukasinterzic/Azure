@@ -1,3 +1,5 @@
+#create and configure networks, NSGs, IPs, NICs, VM, and assign different vNETs to NICs
+
 # Variables for common values
 $rgName='MyResourceGroup'
 $location='eastus'
