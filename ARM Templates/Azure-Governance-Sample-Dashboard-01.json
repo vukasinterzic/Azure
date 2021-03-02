@@ -1,1 +1,265 @@
-
+{
+  "properties": {
+    "lenses": {
+      "0": {
+        "order": 0,
+        "parts": {
+          "0": {
+            "position": {
+              "x": 0,
+              "y": 0,
+              "colSpan": 4,
+              "rowSpan": 2
+            },
+            "metadata": {
+              "inputs": [],
+              "type": "Extension/Microsoft_AAD_IAM/PartType/OrganizationIdentityPart"
+            }
+          },
+          "1": {
+            "position": {
+              "x": 4,
+              "y": 0,
+              "colSpan": 2,
+              "rowSpan": 2
+            },
+            "metadata": {
+              "inputs": [],
+              "type": "Extension/HubsExtension/PartType/ClockPart",
+              "settings": {
+                "content": {
+                  "settings": {
+                    "timezoneId": "Pacific Standard Time",
+                    "timeFormat": "h:mma",
+                    "version": 1
+                  }
+                }
+              }
+            }
+          },
+          "2": {
+            "position": {
+              "x": 6,
+              "y": 0,
+              "colSpan": 2,
+              "rowSpan": 2
+            },
+            "metadata": {
+              "inputs": [],
+              "type": "Extension/HubsExtension/PartType/ClockPart",
+              "settings": {
+                "content": {
+                  "settings": {
+                    "timezoneId": "Central Europe Standard Time",
+                    "timeFormat": "h:mma",
+                    "version": 1
+                  }
+                }
+              }
+            }
+          },
+          "3": {
+            "position": {
+              "x": 8,
+              "y": 0,
+              "colSpan": 6,
+              "rowSpan": 2
+            },
+            "metadata": {
+              "inputs": [],
+              "type": "Extension/HubsExtension/PartType/MarkdownPart",
+              "settings": {
+                "content": {
+                  "settings": {
+                    "content": "<a href='#' target='_blank'>Azure Architecture Design</a>\n\n<a href='#' target='_blank'>Azure Governance Design</a>\n\n<a href='#' target='_blank'>Azure Migration Guide</a>\n",
+                    "title": "Documentation Links:",
+                    "subtitle": "",
+                    "markdownSource": 1,
+                    "markdownUri": null
+                  }
+                }
+              }
+            }
+          },
+          "4": {
+            "position": {
+              "x": 0,
+              "y": 2,
+              "colSpan": 14,
+              "rowSpan": 6
+            },
+            "metadata": {
+              "inputs": [],
+              "type": "Extension/HubsExtension/PartType/MarkdownPart",
+              "settings": {
+                "content": {
+                  "settings": {
+                    "content": "<img width='1200' src='https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/hybrid-networking/images/hub-spoke.png'/>",
+                    "title": "Azure Architecture",
+                    "subtitle": "",
+                    "markdownSource": 1,
+                    "markdownUri": null
+                  }
+                }
+              }
+            }
+          },
+          "5": {
+            "position": {
+              "x": 0,
+              "y": 8,
+              "colSpan": 14,
+              "rowSpan": 1
+            },
+            "metadata": {
+              "inputs": [],
+              "type": "Extension/HubsExtension/PartType/MarkdownPart",
+              "settings": {
+                "content": {
+                  "settings": {
+                    "content": "<div style=\"line-height:50px;\"><span style='font-size:16px;font-weight:bold'>Azure Governance</div>",
+                    "title": "",
+                    "subtitle": "",
+                    "markdownSource": 1,
+                    "markdownUri": null
+                  }
+                }
+              }
+            }
+          },
+          "6": {
+            "position": {
+              "x": 0,
+              "y": 9,
+              "colSpan": 5,
+              "rowSpan": 2
+            },
+            "metadata": {
+              "inputs": [],
+              "type": "Extension/HubsExtension/PartType/MarkdownPart",
+              "settings": {
+                "content": {
+                  "settings": {
+                    "content": "| **Region Priority** | **Region Name** | **Physical Location** |\n| --- | --- | --- |\n| Primary Region |  |  |\n| Secondary Region Pair |  |  |",
+                    "title": "Regions",
+                    "subtitle": "",
+                    "markdownSource": 1,
+                    "markdownUri": null
+                  }
+                }
+              }
+            }
+          },
+          "7": {
+            "position": {
+              "x": 5,
+              "y": 9,
+              "colSpan": 9,
+              "rowSpan": 2
+            },
+            "metadata": {
+              "inputs": [],
+              "type": "Extension/HubsExtension/PartType/MarkdownPart",
+              "settings": {
+                "content": {
+                  "settings": {
+                    "content": "| **Subscription Name** | **Purpose** | **Management Group** |\n| --- | --- | --- |\n| SUB1 | Infrastructure resources, connectivity to Internet and On-Premises | MG1 |\n| SUB2 | Applications subscription | MG1 |",
+                    "title": "Subscriptions",
+                    "subtitle": "",
+                    "markdownSource": 1,
+                    "markdownUri": null
+                  }
+                }
+              }
+            }
+          },
+          "8": {
+            "position": {
+              "x": 0,
+              "y": 11,
+              "colSpan": 14,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [],
+              "type": "Extension/HubsExtension/PartType/MarkdownPart",
+              "settings": {
+                "content": {
+                  "settings": {
+                    "content": "| **TAG** | **Values** | **Meaning** | **Implementation Type** |\n| --- | --- | --- | --- |\n| Technical-Contact | $Email | Identification who is responsible for the resource from the technical point and if it is running. | Required by Azure Policy on Resource Groups |\n| Business-Contact | $Email | Identification who is responsible for the product which is using the resource. | Required by Azure Policy on Resource Groups |\n| SLA | High, Medium, Low | Identification of business criticality of resources. | Default value will be assigned by Azure Policy if not specified. Default value: Low |",
+                    "title": "TAGS",
+                    "subtitle": "",
+                    "markdownSource": 1,
+                    "markdownUri": null
+                  }
+                }
+              }
+            }
+          },
+          "9": {
+            "position": {
+              "x": 0,
+              "y": 14,
+              "colSpan": 14,
+              "rowSpan": 3
+            },
+            "metadata": {
+              "inputs": [],
+              "type": "Extension/HubsExtension/PartType/MarkdownPart",
+              "settings": {
+                "content": {
+                  "settings": {
+                    "content": "| **Resource Type** | **Naming convention** | **Example** |\n| --- | --- | --- |\n| **Organizational Structure** |\n| Management Group | MG-$Purpose | MG-Production |\n| Subscription | SUB-$Purpose | SUB-Connectivity |\n| Resource Group | rg-$purpose | rg-app01 |",
+                    "title": "Resource Naming",
+                    "subtitle": "",
+                    "markdownSource": 1,
+                    "markdownUri": null
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "metadata": {
+      "model": {
+        "timeRange": {
+          "value": {
+            "relative": {
+              "duration": 24,
+              "timeUnit": 1
+            }
+          },
+          "type": "MsPortalFx.Composition.Configuration.ValueTypes.TimeRange"
+        },
+        "filterLocale": {
+          "value": "en-us"
+        },
+        "filters": {
+          "value": {
+            "MsPortalFx_TimeRange": {
+              "model": {
+                "format": "utc",
+                "granularity": "auto",
+                "relative": "24h"
+              },
+              "displayCache": {
+                "name": "UTC Time",
+                "value": "Past 24 hours"
+              },
+              "filteredPartIds": []
+            }
+          }
+        }
+      }
+    }
+  },
+  "name": "AzureIs.Fun Governance Dashboard 1",
+  "type": "Microsoft.Portal/dashboards",
+  "location": "ENTER LOCATION",
+  "tags": {
+    "hidden-title": "AzureIs.Fun Governance Dashboard 1"
+  },
+  "apiVersion": "2015-08-01-preview"
+}
