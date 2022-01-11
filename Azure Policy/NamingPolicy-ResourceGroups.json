@@ -1,0 +1,38 @@
+{
+    "mode": "All",
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+          },
+          {
+            "field": "name",
+            "notLike": "networkwatcherrg"
+          },
+          {
+            "field": "name",
+            "notLike": "AzureBackupRG*"
+          },
+          {
+            "field": "name",
+            "notLike": "RG-Prod-*"
+          },
+          {
+            "field": "name",
+            "notLike": "RG-Dev-*"
+          },
+          {
+            "field": "name",
+            "notLike": "RG-Test-*"
+          }
+        ]
+      },
+      "then": {
+        "effect": "deny"
+      }
+    },
+    "parameters": {}
+}
+  
