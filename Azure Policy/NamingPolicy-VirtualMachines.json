@@ -3,7 +3,7 @@
      "displayName": "NamingPolicy - VirtualMachines",
      "policyType": "Custom",
      "mode": "All",
-     "description": "Limit VM resource name to 15 characters, because that is the limitation inside the Windows OS. If Azure Resource name is longer, Windows name will be cut short at 15 characters and may be different from Azure Resource VM name.\n\nPart of the SBHG-Initiative-NamingPolicy initiative.",
+     "description": "Limit VM resource name to 15 characters, because that is the limitation inside the Windows OS. If Azure Resource name is longer, Windows name will be cut short at 15 characters and may be different from Azure Resource VM name.\n\nMore at https://github.com/vukasinterzic.",
      "parameters": {},
      "policyRule": {
       "if": {
