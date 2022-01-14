@@ -3,10 +3,11 @@
 # Get all Az Subscriptions
 $Subscriptions = Get-AzSubscription
 
+#Define old and new tag names
 $WrongName = "WrongTagName"
 $CorrectName = "CorrectTagName"
 
-#subscription loop
+#Subscription loop
 foreach ($subscription in $Subscriptions) {
 
     $Resources = @()
@@ -15,8 +16,9 @@ foreach ($subscription in $Subscriptions) {
 
     Get-AzSubscription -SubscriptionName $Subscription.Name | Set-AZContext
 
-    $resources = Get-AzResource -TagName $WrongName
+    $Resources = Get-AzResource -TagName $WrongName
 
+    #Resource loop
     foreach ($Resource in $Resources) {
 
         $ResourceTags = ""
