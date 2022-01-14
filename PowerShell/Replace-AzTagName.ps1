@@ -1,4 +1,4 @@
-#Task 2: Replace Tag Name, keep original Tag Value:
+#Task 2: Replace Tag Name, keep the original Tag Value:
 
 # Get all Az Subscriptions
 $Subscriptions = Get-AzSubscription
