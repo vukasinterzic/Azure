@@ -38,3 +38,11 @@ New-AzVNet -Name $VirtualNetworkName -ResourceGroupName $ResourceGroupName -Loca
 #Create a Subnet
 Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Subnet $SubnetName ..."
 
+
+
+
+#List Public IPs:
+$PIP1 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP1Name
+$PIP2 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP2Name
+
+Write-Host -ForegroundColor Yellow -BackgroundColor Black "Public IPs: $PIP1, $PIP2"
