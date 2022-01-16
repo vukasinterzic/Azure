@@ -22,6 +22,8 @@ $VMSize = "Standard_B1ms"
 $VMOS = ""
 $VNetAddressPrefix = "10.0.$Number.0/24"
 $SubnetAddressPrefix = "10.0.$Number.0/27"
+$VMUser = "labuser"
+$VMPassword = "Hello$Number$Number!!"
 
 $Tags = $VM.Tags
 $Tags += @{"Environment"="Demo"}
