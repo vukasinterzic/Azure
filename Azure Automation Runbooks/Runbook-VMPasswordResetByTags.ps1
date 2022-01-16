@@ -38,6 +38,10 @@ catch {
 
 $Subscriptions = Get-AzSubscription | Where-Object Name -notlike 'Access to Azure Active Directory'
 
+
+# Make demo more simple. You just need to process one subscription. You can add subscription switch later.
+# I need to work with a keyvault. I'm not sure if that will work if i switch subscription. Therefore you need to think about that and maybe save the values before creating variables.
+
 #For this to work accross subscriptions, RunAsAccount needs to get assigned role. Currently it has assigned VM Contributor to Management Group Prod.
 
 foreach ($subscription in $Subscriptions) {
@@ -56,6 +60,10 @@ foreach ($subscription in $Subscriptions) {
     foreach ($VM in $VMs) {
 
         Write-Output "Processing VM $($VM.Name)..."
+
+
+        # Get VM name
+        # 
 
         ### Time Offset calculation
 
