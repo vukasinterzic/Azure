@@ -44,7 +44,7 @@ $Subscriptions = Get-AzSubscription | Where-Object Name -notlike 'Access to Azur
 
 #For this to work accross subscriptions, RunAsAccount needs to get assigned role. Currently it has assigned VM Contributor to Management Group Prod.
 
-foreach ($subscription in $Subscriptions) {
+foreach ($Subscription in $Subscriptions) {
 
     $VMs = @()
 
