@@ -9,15 +9,19 @@
 
 #Define variables
 
-$Number = Get-Random -Minimum 100 -Maximum 999
+$Number = Get-Random -Minimum 1 -Maximum 254
 $Location = "westus2"
 $ResourceGroupName = "RG-DemoLab$Number"
 $VirtualNetworkName = "vNet-DemoLab$Number"
-$SubnetName = "subnet-DemoLab$Number"
+$SubnetName = "subnet1-DemoLab$Number"
 $PIP1Name = "pip-VM1-DemoLab$Number"
 $PIP2Name = "pip-VM2-DemoLab$Number"
 $VM1Name = "VM1-DemoLab$Number"
 $VM2Name = "VM2-DemoLab$Number"
+$VMSize = "Standard_B1ms"
+$VMOS = ""
+$VNetAddressPrefix = "10.0.$Number.0/24"
+$SubnetAddressPrefix = "10.0.$Number.0/27"
 
 $Tags = $VM.Tags
 $Tags += @{"Environment"="Demo"}
@@ -37,6 +41,22 @@ New-AzVNet -Name $VirtualNetworkName -ResourceGroupName $ResourceGroupName -Loca
 
 #Create a Subnet
 Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Subnet $SubnetName ..."
+
+
+#Create Public IP Addresses
+
+Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Public IP Address $PIP1Name ..."
+
+
+Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Public IP Address $PIP2Name ..."
+
+
+#Create VMs:
+
+Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Virtual Machine $VM1Name ..."
+
+
+Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Virtual Machine $VM2Name ..."
 
 
 
