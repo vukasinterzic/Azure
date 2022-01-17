@@ -2,9 +2,7 @@
 #Create a Virtual Network
 #Create a Subnet
 #Create a Public IP Address
-#Create a Load Balancer
 #Create a Virtual Machine x2 with the above created RG, Vnet, Subnet, Public IP Address
-
 
 
 #Define variables
@@ -23,7 +21,7 @@ $VMSize = "Standard_B1ms"
 $VNetAddressPrefix = "10.0.$Number.0/24"
 $SubnetAddressPrefix = "10.0.$Number.0/27"
 $VMUser = "labuser"
-$VMPassword = "Hello$Number$Number!!"
+$VMPassword = ConvertTo-SecureString "Hello$Number$Number!!" -AsPlainText -Force
 
 $Tags = @{
     Environment = "Demo"
@@ -59,6 +57,27 @@ $VNET = @{
 
 New-AzVirtualNetwork @vnet
 
+<#
+#Create a Key Vault
+Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Key Vault $KeyVaultName ..."
+
+$KeyVault = @{
+    Name = $KeyVaultName
+    ResourceGroupName = $ResourceGroupName
+    Location = $Location
+    EnabledForDeployment = $true
+    EnabledForTemplateDeployment = $true
+    EnabledForDiskEncryption = $true
+    EnabledForTemplateDeployment = $true
+}
+
+New-AzKeyVault @KeyVault
+
+#Create KeyVault Secret
+New-AZKeyVaultsSecret -Name $VMUser -Value $VMPassword -VaultName $KeyVaultName
+
+#>
+
 
 #Create Public IP Addresses
 
@@ -93,22 +112,43 @@ $publicIp2 = @{
 
 New-AzPublicIpAddress @publicIp2
 
-
-
-
 #Create VMs:
 
 Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Virtual Machine $VM1Name ..."
 
+$vm1 = @{
+    ResourceGroupName = $ResourceGroupName
+    Location = $Location
+    Name = $VM1Name
+    VirtualNetworkName = $VirtualNetworkName
+    SubnetName = $SubnetName
+    PublicIpAddressName = $PIP1Name
+    Size = $VMSize
+    OpenPorts = "3389"
+    Credential = New-Object System.Management.Automation.PSCredential ($VMUser, $VMPassword);
+}
 
+New-AzVM @vm1 -AsJob
 
 Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Virtual Machine $VM2Name ..."
 
+$vm2 = @{
+    ResourceGroupName = $ResourceGroupName
+    Location = $Location
+    Name = $VM2Name
+    VirtualNetworkName = $VirtualNetworkName
+    SubnetName = $SubnetName
+    PublicIpAddressName = $PIP2Name
+    Size = $VMSize
+    OpenPorts = "3389"
+    Credential = New-Object System.Management.Automation.PSCredential ($VMUser, $VMPassword);
+}
 
+New-AzVM @vm2 -AsJob
 
 
 #List Public IPs:
 $PIP1 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP1Name
 $PIP2 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP2Name
 
-Write-Host -ForegroundColor Yellow -BackgroundColor Black "Public IPs: $PIP1, $PIP2"
+Write-Host -ForegroundColor Yellow -BackgroundColor Black "Public IP for $VM1Name is $($PIP1.IpAddress), and for $VM2Name is $($PIP2.IpAddress)"
