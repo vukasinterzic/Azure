@@ -164,4 +164,12 @@ while (($($PIP1.IpAddress) -eq "Not Assigned") -or ($($PIP2.IpAddress) -eq "Not 
     $PIP2 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP2Name
 }
 
-Write-Host -ForegroundColor Black -BackgroundColor Yellow "Public IP for $VM1Name is $($PIP1.IpAddress), and for $VM2Name is $($PIP2.IpAddress)"
+Write-Host -ForegroundColor Black -BackgroundColor Yellow -NoNewline "Public IP for $VM1Name is "
+Write-Host -ForegroundColor Black -BackgroundColor Cyan -NoNewline "$($PIP1.IpAddress)"
+Write-Host -ForegroundColor Black -BackgroundColor Yellow -NoNewline ", and for $VM2Name is "
+Write-Host -ForegroundColor Black -BackgroundColor Cyan "$($PIP2.IpAddress)"
+
+Write-Host -ForegroundColor Black -BackgroundColor Yellow -NoNewline "VM admin user name is "
+Write-Host -ForegroundColor Black -BackgroundColor Cyan -NoNewline "$VMUser"
+Write-Host -ForegroundColor Black -BackgroundColor Yellow -NoNewline " and the password from KeyVault is: "
+Write-Host -ForegroundColor Black -BackgroundColor Cyan "$(Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $VMUser -AsPlainText)"
