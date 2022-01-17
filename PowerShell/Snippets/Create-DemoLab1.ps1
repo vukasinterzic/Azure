@@ -22,7 +22,7 @@ $VMSize = "Standard_B1ms"
 $VNetAddressPrefix = "10.0.$Number.0/24"
 $SubnetAddressPrefix = "10.0.$Number.0/27"
 $VMUser = "labuser"
-$VMPassword = ConvertTo-SecureString "Hello$Number$Number!!" -AsPlainText -Force
+$VMPassword = ConvertTo-SecureString "Hello$(Get-Random -Minimum 10000)!" -AsPlainText -Force
 
 $Tags = @{
     Environment = "Demo"
