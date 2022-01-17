@@ -3,8 +3,11 @@
 #Create a Virtual Network
 #Create a Subnet
 #Create a Public IP Address
-#Create a Virtual Machine x2 with the above created RG, Vnet, Subnet, Public IP Address
+#Create a Virtual Machine x2 with the above created RG, Vnet, Subnet, Public IP Address, open port 3389
 
+
+#TODO: Add load balancer
+#TODO: Add a web app, open port 80 and 443, install IIS
 
 #Define variables
 
@@ -147,7 +150,7 @@ New-AzVM @vm2 -AsJob
 
 
 #List Public IPs:
+Start-Sleep -Seconds 60
 $PIP1 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP1Name
 $PIP2 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP2Name
-
 Write-Host -ForegroundColor Yellow -BackgroundColor Black "Public IP for $VM1Name is $($PIP1.IpAddress), and for $VM2Name is $($PIP2.IpAddress)"
