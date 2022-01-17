@@ -150,7 +150,18 @@ New-AzVM @vm2 -AsJob
 
 
 #List Public IPs:
-Start-Sleep -Seconds 60
+Write-Host -ForegroundColor Yellow "Waiting for Public IPs to be assigned..."
+
 $PIP1 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP1Name
 $PIP2 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP2Name
-Write-Host -ForegroundColor Yellow -BackgroundColor Black "Public IP for $VM1Name is $($PIP1.IpAddress), and for $VM2Name is $($PIP2.IpAddress)"
+
+while (($($PIP1.IpAddress) -eq "Not Assigned") -or ($($PIP2.IpAddress) -eq "Not Assigned")) {
+
+    Write-Host -ForegroundColor Yellow "Public IP Addresses are not assigned yet..."
+
+    Start-Sleep -Seconds 5
+    $PIP1 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP1Name
+    $PIP2 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP2Name
+}
+
+Write-Host -ForegroundColor Black -BackgroundColor Yellow "Public IP for $VM1Name is $($PIP1.IpAddress), and for $VM2Name is $($PIP2.IpAddress)"
