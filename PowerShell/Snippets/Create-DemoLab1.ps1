@@ -10,6 +10,7 @@
 $Number = Get-Random -Minimum 1 -Maximum 254
 $Location = "westus2"
 $ResourceGroupName = "RG-Test-DemoLab$Number"
+$KeyVaultName = "KeyVault-DemoLab$Number"
 $VirtualNetworkName = "vNet-DemoLab$Number"
 $SubnetName = "subnet1-DemoLab$Number"
 $PIP1Name = "pip-VM1-DemoLab$Number"
@@ -17,7 +18,6 @@ $PIP2Name = "pip-VM2-DemoLab$Number"
 $VM1Name = "VM1-DemoLab$Number"
 $VM2Name = "VM2-DemoLab$Number"
 $VMSize = "Standard_B1ms"
-#$VMOS = ""
 $VNetAddressPrefix = "10.0.$Number.0/24"
 $SubnetAddressPrefix = "10.0.$Number.0/27"
 $VMUser = "labuser"
@@ -39,6 +39,25 @@ $RG = @{
 
 New-AzResourceGroup @RG
 
+#Create a Key Vault
+Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Key Vault $KeyVaultName ..."
+
+$KeyVault = @{
+    Name = $KeyVaultName
+    ResourceGroupName = $ResourceGroupName
+    Location = $Location
+    EnabledForDeployment = $true
+    EnabledForTemplateDeployment = $true
+    EnabledForDiskEncryption = $true
+}
+
+New-AzKeyVault @KeyVault
+
+#Create KeyVault Secret
+Write-Host -ForegroundColor Black -BackgroundColor Cyan "Saving VM local admin User Name and Password as a KeyVault secret ..."
+
+Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $VMUser -SecretValue $VMPassword
+
 
 #Create a Virtual Network
 Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Virtual Network $VirtualNetworkName with network space $VNetAddressPrefix and subnet $SubnetName ($SubnetAddressPrefix) ..."
@@ -56,27 +75,6 @@ $VNET = @{
 }
 
 New-AzVirtualNetwork @vnet
-
-<#
-#Create a Key Vault
-Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Key Vault $KeyVaultName ..."
-
-$KeyVault = @{
-    Name = $KeyVaultName
-    ResourceGroupName = $ResourceGroupName
-    Location = $Location
-    EnabledForDeployment = $true
-    EnabledForTemplateDeployment = $true
-    EnabledForDiskEncryption = $true
-    EnabledForTemplateDeployment = $true
-}
-
-New-AzKeyVault @KeyVault
-
-#Create KeyVault Secret
-New-AZKeyVaultsSecret -Name $VMUser -Value $VMPassword -VaultName $KeyVaultName
-
-#>
 
 
 #Create Public IP Addresses
