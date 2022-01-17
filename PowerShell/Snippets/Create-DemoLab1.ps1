@@ -1,4 +1,5 @@
 #Create a RG
+#Create KeyVault and Secret with VM login credentials
 #Create a Virtual Network
 #Create a Subnet
 #Create a Public IP Address
