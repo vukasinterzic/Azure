@@ -2,29 +2,31 @@
 
 #FIXME Add logging option, save logs to a storage account!!!!
 
-Write-Output "Logging into Azure subscription using Az cmdlets..."
+Write-Output "Connecting ..."
     
 # Ensures you do not inherit an AzContext in your runbook
-#Disable-AzContextAutosave -Scope Process
+Disable-AzContextAutosave -Scope Process
 
-$sub = Get-AzSubscription -ErrorAction SilentlyContinue
-if(-not($sub))
-{
-    Connect-AzAccount
-}
+# Connect to Azure with system-assigned managed identity
+$AzureContext = (Connect-AzAccount -Identity).context
+
+# Set and store context
+$AzureContext = Set-AzContext -SubscriptionName $AzureContext.Subscription -DefaultProfile $AzureContext   
+
 
 #Define variables
+
+Write-Output "Defining variables ..."
 
 $KeyVaultName = "KV-AutomationTest"
 $KeyVaultSubscriptionName = "Microsoft Azure Sponsorship"
 $SecretsHolder = @()
 
-#Get all VMs that should be part of the Schedule:
-#List VMs in all subscriptions:
+Write-Output "Getting the list of all subscriptions...."
 
 $Subscriptions = Get-AzSubscription | Where-Object Name -notlike 'Access to Azure Active Directory'
 
-
+Write-Output "Start Subscription loop..."
 foreach ($Subscription in $Subscriptions) {
 
     $VMs = @()
@@ -36,7 +38,11 @@ foreach ($Subscription in $Subscriptions) {
     $VMs +=  Get-AzResource -ResourceType "Microsoft.Compute/VirtualMachines" -TagName "VMPasswordReset" -TagValue "Yes"
 
 
-    IF (!$VMs) { Write-Output "No VMs with enabled password reset in this subscription." }
+    IF (!$VMs) { 
+        Write-Output "No VMs with enabled password reset in this subscription." 
+    } else {
+        Write-Output "VMs found. Staring the VM loop..."
+    }
 
     foreach ($VM in $VMs) {
 
@@ -74,14 +80,17 @@ foreach ($Subscription in $Subscriptions) {
             Write-Output "VM $($VM.Name) not found."
         }
 
-    } #End of VMs in Subscription
+    } #End of VMs in Subscription loop
 
-} # End of Subscriptions
+} # End of Subscriptions loop
 
 
-#Switching to KeyVault subscription to save secrets
+if ((Get-AzContext).Subscription.Name -ne $KeyVaultSubscriptionName) {
+    
+    Write-Output "Switching to Subscription where the KeyVault is..."
+    Get-AzSubscription -SubscriptionName $KeyVaultSubscriptionName | Set-AZContext
 
-Get-AzSubscription -SubscriptionName $KeyVaultSubscriptionName | Set-AZContext
+}
 
 #Save password to KeyVault
 Write-Output "Saving passwords to KeyVault..."
