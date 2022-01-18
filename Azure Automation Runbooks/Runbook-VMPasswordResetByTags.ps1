@@ -7,32 +7,11 @@ Write-Output "Logging into Azure subscription using Az cmdlets..."
 # Ensures you do not inherit an AzContext in your runbook
 #Disable-AzContextAutosave -Scope Process
 
-$connectionName = "AzureRunAsConnection"
-try
+$sub = Get-AzSubscription -ErrorAction SilentlyContinue
+if(-not($sub))
 {
-    # Get the connection "AzureRunAsConnection "
-    $servicePrincipalConnection=Get-AutomationConnection -Name $connectionName         
-
-    Add-AzAccount `
-        -ServicePrincipal `
-        -TenantId $servicePrincipalConnection.TenantId `
-        -ApplicationId $servicePrincipalConnection.ApplicationId `
-        -CertificateThumbprint $servicePrincipalConnection.CertificateThumbprint 
-    
-    Write-Output "Successfully logged into Azure subscription using Az cmdlets..."
+    Connect-AzAccount
 }
-
-catch {
-    if (!$servicePrincipalConnection)
-    {
-        $ErrorMessage = "Connection $connectionName not found."
-        throw $ErrorMessage
-    } else{
-        Write-Error -Message $_.Exception
-        throw $_.Exception
-    }
-}
-
 
 #Define variables
 
