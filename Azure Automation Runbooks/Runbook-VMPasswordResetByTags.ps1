@@ -33,16 +33,18 @@ catch {
     }
 }
 
+
+#Define variables
+
+$KeyVaultName = "KV-AutomationTest"
+$KeyVaultSubscriptionName = "Microsoft Azure Sponsorship"
+$SecretsHolder = @()
+
 #Get all VMs that should be part of the Schedule:
 #List VMs in all subscriptions:
 
 $Subscriptions = Get-AzSubscription | Where-Object Name -notlike 'Access to Azure Active Directory'
 
-
-# Make demo more simple. You just need to process one subscription. You can add subscription switch later.
-# I need to work with a keyvault. I'm not sure if that will work if i switch subscription. Therefore you need to think about that and maybe save the values before creating variables.
-
-#For this to work accross subscriptions, RunAsAccount needs to get assigned role. Currently it has assigned VM Contributor to Management Group Prod.
 
 foreach ($Subscription in $Subscriptions) {
 
@@ -60,12 +62,55 @@ foreach ($Subscription in $Subscriptions) {
     foreach ($VM in $VMs) {
 
         Write-Output "Processing VM $($VM.Name)..."
-    
 
-        #TODO: Add action
+        $VMInfo = Get-AzVM -Name $VM.Name -ResourceGroupName $VM.ResourceGroupName
+
+        if ($VMInfo) {
+
+            #Generate a new password
+            $CharArray = "!@#$%^&*0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz!@#$%^&*".tochararray()
+            $Password = ConvertTo-SecureString (($CharArray | Get-Random -Count 18) -join '') -AsPlainText -Force
+
+            #Secret Name will be in the format of "VM Name - Admin User Name"
+            $KeyVaultSecretName = $VMInfo.Name + "-" + $VMInfo.OSProfile.AdminUsername
+
+            $VMReset = @{
+                VMName = $VMInfo.Name
+                ResourceGroupName = $VMInfo.ResourceGroupName
+                Location = $VMInfo.Location
+                Credential = New-Object System.Management.Automation.PSCredential ($VMInfo.OSProfile.AdminUsername, $Password)
+            }
+
+
+            Write-Output "Resetting password for VM $($VM.Name)..." 
+            Set-AzVMAccessExtension @VMReset -typeHandlerVersion "2.0" -Name VMAccessAgent
+
+            #Add secret to object array
+            $secret = new-object -TypeName psobject
+            $secret | Add-Member -MemberType NoteProperty -Name SecretName -Value $KeyVaultSecretName
+            $secret | Add-Member -MemberType NoteProperty -Name SecretValue -Value $Password
+            $SecretsHolder += $secret
+
+        } else {
+            Write-Output "VM $($VM.Name) not found."
+        }
 
     } #End of VMs in Subscription
 
 } # End of Subscriptions
+
+
+#Switching to KeyVault subscription to save secrets
+
+Get-AzSubscription -SubscriptionName $KeyVaultSubscriptionName | Set-AZContext
+
+#Save password to KeyVault
+Write-Output "Saving passwords to KeyVault..."
+foreach ($s in $SecretsHolder) {
+
+    Write-Output "Saving secret $($s.SecretName)..."
+    Set-AzKeyVaultSecret -VaultName $KeyVaultName -SecretName $s.SecretName -SecretValue $s.SecretValue
+
+}
  
  Write-Output "Runbook completed."
