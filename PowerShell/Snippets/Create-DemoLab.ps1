@@ -32,6 +32,22 @@ $Tags = @{
     Project="BlogPost"
 }
 
+#Checking login status
+if (-not (Get-AzContext)) {
+    Write-Host -ForegroundColor Magenta "Please login to an Azure account"
+    Connect-AzAccount
+}
+
+#Check if subscription is correct
+if ((Get-AzContext).Subscription.Name -ne "Microsoft Azure Sponsorship") {
+    Write-Host -ForegroundColor Red "Switching to the correct subscription"
+    
+    Get-AzSubscription -SubscriptionName "Microsoft Azure Sponsorship" | Set-AzContext
+
+}
+
+#FIXME: Check subscription before continuing
+
 #Create a Resource Group
 Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Resource Group $ResourceGroupName ..."
 
