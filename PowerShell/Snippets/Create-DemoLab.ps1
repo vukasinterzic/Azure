@@ -82,6 +82,7 @@ Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $VMUser -SecretValue $VMPass
 
 
 Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Automation Account $AutomationAccountName ..."
+
 $automationAccount = @{
     Name = $AutomationAccountName
     ResourceGroupName = $ResourceGroupName
@@ -89,7 +90,25 @@ $automationAccount = @{
     Tags = $Tags
 }
 
-New-AzAutomationAccount @automationAccount #-AssignSystemIdentity
+New-AzAutomationAccount @automationAccount -AssignSystemIdentity
+
+
+Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating KeyVault Access Policy for Automation Account ..."
+
+$KeyVaultAccessPolicy = @{
+
+    PermissionsToKeys = @("get", "list", "delete", "create", "update", "import", "backup", "restore", "recover", "purge")
+    PermissionsToSecrets = @("get", "list", "delete", "set", "create", "update")
+    PermissionsToCertificates = @("get", "list", "delete", "create", "update")
+    PermissionsToStorage = @("get", "list", "delete", "set", "create", "update")
+    PermissionsToConnect = @("connect")
+    KeyVaultName = $KeyVaultName
+    ServicePrincipalName = $AutomationAccountName
+    ResourceGroupName = $ResourceGroupName
+}
+
+Set-AzKeyVaultAccessPolicy @KeyVaultAccessPolicy
+
 
 
 #Create a Virtual Network
