@@ -9,6 +9,9 @@
 
 #TODO: Add load balancer
 #TODO: Add a web app, open port 80 and 443, install IIS
+#FIXME: Add verifications and checks
+#TODO: Add variable number of VMs (that will affect number of VMs, Public IPs, and verify if the size of VNet/Subnet is enough)
+
 
 #Define variables
 
@@ -16,8 +19,10 @@ $Number = Get-Random -Minimum 1 -Maximum 254
 $Location = "westus2"
 $ResourceGroupName = "RG-Test-DemoLab$Number"
 $KeyVaultName = "KeyVault-DemoLab$Number"
+$AutomationAccountName = "AutomationAccount-DemoLab$Number"
 $VirtualNetworkName = "vNet-DemoLab$Number"
 $SubnetName = "subnet1-DemoLab$Number"
+$NumberOfVMs = 26
 $PIP1Name = "pip-VM1-DemoLab$Number"
 $PIP2Name = "pip-VM2-DemoLab$Number"
 $VM1Name = "VM1-DemoLab$Number"
@@ -27,7 +32,7 @@ $VNetAddressPrefix = "10.0.$Number.0/24"
 $SubnetAddressPrefix = "10.0.$Number.0/27"
 $VMUser = "labuser"
 $VMPassword = ConvertTo-SecureString "Hello$(Get-Random -Minimum 10000)!" -AsPlainText -Force
-$AutomationAccountName = "AutomationAccount-DemoLab$Number"
+
 
 $Tags = @{
     Environment = "Demo"
@@ -49,6 +54,40 @@ if ((Get-AzContext).Subscription.Name -ne "Microsoft Azure Sponsorship") {
 }
 
 #FIXME: Check subscription before continuing
+
+
+
+
+#Verify if VMs will fit in the subnet
+
+Write-Host -BackgroundColor Magenta -ForegroundColor White "Checking if subnet mask is valid and if requested number of VMs will fit in the subnet..."
+
+$SubnetMask = $SubnetAddressPrefix.Split("/")[1]
+
+#Class C, - 5 addresses for Azure Reserved IPs
+$SubnetSizes = @{
+    "24" = "254"
+    "25" = "126"
+    "26" = "62"
+    "27" = "30"
+    "28" = "14"
+    "29" = "6"
+    "30" = "5" #it will be 0 after -5
+    "31" = "5" #it will be 0 after -5
+}
+
+If ($SubnetMask -notin $SubnetSizes.Keys) {
+    Write-Host -ForegroundColor Red "Subnet mask is not valid!"
+    exit 1
+}
+
+if (($SubnetSizes[$SubnetMask] - 5) -lt $NumberOfVMs) {
+    Write-Host -ForegroundColor Red "The subnet is not big enough to create the number of VMs requested!"
+    exit
+}
+
+
+
 
 #Create a Resource Group
 Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Resource Group $ResourceGroupName ..."
@@ -81,6 +120,7 @@ Write-Host -ForegroundColor Black -BackgroundColor Cyan "Saving VM local admin U
 Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $VMUser -SecretValue $VMPassword
 
 
+#Create an Automation Account with System Assigned Identity
 Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Automation Account $AutomationAccountName ..."
 
 $automationAccount = @{
@@ -93,22 +133,21 @@ $automationAccount = @{
 New-AzAutomationAccount @automationAccount -AssignSystemIdentity
 
 
+#Assign Automation Account access to the KeyVault
 Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating KeyVault Access Policy for Automation Account ..."
 
 $KeyVaultAccessPolicy = @{
 
-    PermissionsToKeys = @("get", "list", "delete", "create", "update", "import", "backup", "restore", "recover", "purge")
-    PermissionsToSecrets = @("get", "list", "delete", "set", "create", "update")
-    PermissionsToCertificates = @("get", "list", "delete", "create", "update")
-    PermissionsToStorage = @("get", "list", "delete", "set", "create", "update")
-    PermissionsToConnect = @("connect")
-    KeyVaultName = $KeyVaultName
-    ServicePrincipalName = $AutomationAccountName
+    PermissionsToKeys = "All"
+    PermissionsToSecrets = "All"
+    PermissionsToCertificates = "All"
+    PermissionsToStorage = "All"
+    VaultName = $KeyVaultName
+    ServicePrincipalName = (Get-AzADServicePrincipal -DisplayName $AutomationAccountName).AppId
     ResourceGroupName = $ResourceGroupName
 }
 
 Set-AzKeyVaultAccessPolicy @KeyVaultAccessPolicy
-
 
 
 #Create a Virtual Network
@@ -127,6 +166,13 @@ $VNET = @{
 }
 
 New-AzVirtualNetwork @vnet
+
+
+
+
+#Loop to create VMs and Public IPs
+
+
 
 
 #Create Public IP Addresses
