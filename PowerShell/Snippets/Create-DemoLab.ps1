@@ -1,5 +1,6 @@
 #Create a RG
 #Create KeyVault and Secret with VM login credentials
+#Create an Automation Account
 #Create a Virtual Network
 #Create a Subnet
 #Create a Public IP Address
@@ -26,6 +27,7 @@ $VNetAddressPrefix = "10.0.$Number.0/24"
 $SubnetAddressPrefix = "10.0.$Number.0/27"
 $VMUser = "labuser"
 $VMPassword = ConvertTo-SecureString "Hello$(Get-Random -Minimum 10000)!" -AsPlainText -Force
+$AutomationAccountName = "AutomationAccount-DemoLab$Number"
 
 $Tags = @{
     Environment = "Demo"
@@ -77,6 +79,17 @@ New-AzKeyVault @KeyVault
 Write-Host -ForegroundColor Black -BackgroundColor Cyan "Saving VM local admin User Name and Password as a KeyVault secret ..."
 
 Set-AzKeyVaultSecret -VaultName $KeyVaultName -Name $VMUser -SecretValue $VMPassword
+
+
+Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Automation Account $AutomationAccountName ..."
+$automationAccount = @{
+    Name = $AutomationAccountName
+    ResourceGroupName = $ResourceGroupName
+    Location = $Location
+    Tags = $Tags
+}
+
+New-AzAutomationAccount @automationAccount #-AssignSystemIdentity
 
 
 #Create a Virtual Network
