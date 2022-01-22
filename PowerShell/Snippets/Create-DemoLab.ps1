@@ -17,16 +17,13 @@
 
 $Number = Get-Random -Minimum 1 -Maximum 254
 $Location = "westus2"
+$SubscriptionName = "Microsoft Azure Sponsorship"
 $ResourceGroupName = "RG-Test-DemoLab$Number"
 $KeyVaultName = "KeyVault-DemoLab$Number"
 $AutomationAccountName = "AutomationAccount-DemoLab$Number"
 $VirtualNetworkName = "vNet-DemoLab$Number"
 $SubnetName = "subnet1-DemoLab$Number"
-$NumberOfVMs = 3
-#$PIP1Name = "pip-VM1-DemoLab$Number"
-#$PIP2Name = "pip-VM2-DemoLab$Number"
-#$VM1Name = "VM1-DemoLab$Number"
-#$VM2Name = "VM2-DemoLab$Number"
+$NumberOfVMs = 300
 $VMSize = "Standard_B1ms"
 $VNetAddressPrefix = "10.0.$Number.0/24"
 $SubnetAddressPrefix = "10.0.$Number.0/27"
@@ -46,20 +43,27 @@ if (-not (Get-AzContext)) {
 }
 
 #Check if subscription is correct
-if ((Get-AzContext).Subscription.Name -ne "Microsoft Azure Sponsorship") {
+if ((Get-AzContext).Subscription.Name -ne $SubscriptionName) {
     Write-Host -ForegroundColor Red "Switching to the correct subscription"
     
-    Get-AzSubscription -SubscriptionName "Microsoft Azure Sponsorship" | Set-AzContext
+    Get-AzSubscription -SubscriptionName $SubscriptionName | Set-AzContext
 
 }
 
-#FIXME: Check subscription before continuing
+#FIXME: If subscription selection not success, throw error
 
 
-#Verify if VMs will fit in the subnet
 
 Write-Host -BackgroundColor Magenta -ForegroundColor White "Checking if subnet mask is valid and if requested number of VMs will fit in the subnet..."
 
+
+#Check Number of VMs
+if ($NumberOfVMs -notin (1..249)) {
+    Write-Host -ForegroundColor Red "Number of VMs must be between 1 and 249. Please try again."
+    exit 1
+}
+
+#Get subnet mask from Subnet definition
 $SubnetMask = $SubnetAddressPrefix.Split("/")[1]
 
 #Class C definition
@@ -72,11 +76,13 @@ $SubnetSizes = @{
     "29" = "6"
 }
 
+#Check if subnet mask is valid
 If ($SubnetMask -notin $SubnetSizes.Keys) {
     Write-Host -ForegroundColor Red "Subnet mask is not valid! Please choose a Class C subnet mask 24-29 and retry."
     exit 1
 }
 
+#Check if requested number of VMs will fit in the subnet
 #- 5 addresses for Azure Reserved IPs
 if (($SubnetSizes[$SubnetMask] - 5) -lt $NumberOfVMs) {
     Write-Host -ForegroundColor Red "The subnet is not big enough to create the number of VMs requested! Please choose a bigger subnet or smaller number of VMs and retry."
@@ -165,77 +171,54 @@ New-AzVirtualNetwork @vnet
 
 
 #Loop to create VMs and Public IPs
+Write-Host -ForegroundColor Black -BackgroundColor Yellow "Creating $NumberOfVMs VMs and Public IPs ..."
+
+foreach($i in 1..$NumberOfVMs){
 
 
+    #Create Public IP Addresses
 
+    Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Public IP Address $i ..."
 
-#Create Public IP Addresses
-
-Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Public IP Address $PIP1Name ..."
-
-$publicIp1 = @{
-    Name = $PIP1Name
-    ResourceGroupName = $ResourceGroupName
-    AllocationMethod = "Dynamic"
-    Location = $Location
-    Sku = "Basic"
-    Tag = @{
-        VMName = $VM1Name
+    $publicIP = @{
+        Name = "pip-VM$i-DemoLab$Number"
+        ResourceGroupName = $ResourceGroupName
+        AllocationMethod = "Dynamic"
+        Location = $Location
+        Sku = "Basic"
+        Tag = @{
+            VMName = "VM$i-DemoLab$Number"
+        }
     }
-}
 
-New-AzPublicIpAddress @publicIp1
+    New-AzPublicIpAddress @publicIP
 
 
-Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Public IP Address $PIP2Name ..."
 
-$publicIp2 = @{
-    Name = $PIP2Name
-    ResourceGroupName = $ResourceGroupName
-    AllocationMethod = "Dynamic"
-    Location = $Location
-    Sku = "Basic"
-    Tag = @{
-        VMName = $VM2Name
+    #Create a VM
+    
+    Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating VM $i ..."
+    
+    $VM = @{
+        ResourceGroupName = $ResourceGroupName
+        Location = $Location
+        Name = "VM$i-DemoLab$Number"
+        VirtualNetworkName = $VirtualNetworkName
+        SubnetName = $SubnetName
+        PublicIpAddressName = "pip-VM$i-DemoLab$Number"
+        Size = $VMSize
+        OpenPorts = "3389"
+        Credential = New-Object System.Management.Automation.PSCredential ($VMUser, $VMPassword);
     }
+    
+    New-AzVM @VM -AsJob
+
+
+
+    #Increase the counter
+    $i++
+
 }
-
-New-AzPublicIpAddress @publicIp2
-
-#Create VMs:
-
-Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Virtual Machine $VM1Name ..."
-
-$vm1 = @{
-    ResourceGroupName = $ResourceGroupName
-    Location = $Location
-    Name = $VM1Name
-    VirtualNetworkName = $VirtualNetworkName
-    SubnetName = $SubnetName
-    PublicIpAddressName = $PIP1Name
-    Size = $VMSize
-    OpenPorts = "3389"
-    Credential = New-Object System.Management.Automation.PSCredential ($VMUser, $VMPassword);
-}
-
-New-AzVM @vm1 -AsJob
-
-Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Virtual Machine $VM2Name ..."
-
-$vm2 = @{
-    ResourceGroupName = $ResourceGroupName
-    Location = $Location
-    Name = $VM2Name
-    VirtualNetworkName = $VirtualNetworkName
-    SubnetName = $SubnetName
-    PublicIpAddressName = $PIP2Name
-    Size = $VMSize
-    OpenPorts = "3389"
-    Credential = New-Object System.Management.Automation.PSCredential ($VMUser, $VMPassword);
-}
-
-New-AzVM @vm2 -AsJob
-
 
 #List Public IPs:
 Write-Host -ForegroundColor Yellow "Waiting for Public IPs to be assigned..."
