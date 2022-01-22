@@ -14,8 +14,7 @@
 
 #Define variables
 
-#$Number = Get-Random -Minimum 1 -Maximum 254
-$Number = 100
+$Number = Get-Random -Minimum 1 -Maximum 254
 $Location = "westus2"
 $SubscriptionName = "Microsoft Azure Sponsorship"
 $ResourceGroupName = "RG-Test-DemoLab$Number"
