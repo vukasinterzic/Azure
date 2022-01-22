@@ -14,7 +14,8 @@
 
 #Define variables
 
-$Number = Get-Random -Minimum 1 -Maximum 254
+#$Number = Get-Random -Minimum 1 -Maximum 254
+$Number = 100
 $Location = "westus2"
 $SubscriptionName = "Microsoft Azure Sponsorship"
 $ResourceGroupName = "RG-Test-DemoLab$Number"
@@ -253,3 +254,16 @@ Write-Host -ForegroundColor Black -BackgroundColor White -NoNewline "VM admin us
 Write-Host -ForegroundColor Black -BackgroundColor Magenta -NoNewline "$VMUser"
 Write-Host -ForegroundColor Black -BackgroundColor White -NoNewline " and the password from KeyVault is: "
 Write-Host -ForegroundColor Black -BackgroundColor Magenta "$(Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $VMUser -AsPlainText)"
+
+
+
+
+
+<# 
+
+#Removing deleted KeyVaults:
+
+Get-AzKeyVault -InRemovedState | % { Remove-AzKeyVault -VaultName $_.VaultName -InRemovedState -Force -Location $Location }
+
+
+#>
