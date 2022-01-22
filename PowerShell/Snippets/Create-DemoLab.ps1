@@ -22,11 +22,11 @@ $KeyVaultName = "KeyVault-DemoLab$Number"
 $AutomationAccountName = "AutomationAccount-DemoLab$Number"
 $VirtualNetworkName = "vNet-DemoLab$Number"
 $SubnetName = "subnet1-DemoLab$Number"
-$NumberOfVMs = 26
-$PIP1Name = "pip-VM1-DemoLab$Number"
-$PIP2Name = "pip-VM2-DemoLab$Number"
-$VM1Name = "VM1-DemoLab$Number"
-$VM2Name = "VM2-DemoLab$Number"
+$NumberOfVMs = 3
+#$PIP1Name = "pip-VM1-DemoLab$Number"
+#$PIP2Name = "pip-VM2-DemoLab$Number"
+#$VM1Name = "VM1-DemoLab$Number"
+#$VM2Name = "VM2-DemoLab$Number"
 $VMSize = "Standard_B1ms"
 $VNetAddressPrefix = "10.0.$Number.0/24"
 $SubnetAddressPrefix = "10.0.$Number.0/27"
@@ -56,15 +56,13 @@ if ((Get-AzContext).Subscription.Name -ne "Microsoft Azure Sponsorship") {
 #FIXME: Check subscription before continuing
 
 
-
-
 #Verify if VMs will fit in the subnet
 
 Write-Host -BackgroundColor Magenta -ForegroundColor White "Checking if subnet mask is valid and if requested number of VMs will fit in the subnet..."
 
 $SubnetMask = $SubnetAddressPrefix.Split("/")[1]
 
-#Class C, - 5 addresses for Azure Reserved IPs
+#Class C definition
 $SubnetSizes = @{
     "24" = "254"
     "25" = "126"
@@ -72,22 +70,18 @@ $SubnetSizes = @{
     "27" = "30"
     "28" = "14"
     "29" = "6"
-    "30" = "5" #it will be 0 after -5
-    "31" = "5" #it will be 0 after -5
 }
 
 If ($SubnetMask -notin $SubnetSizes.Keys) {
-    Write-Host -ForegroundColor Red "Subnet mask is not valid!"
+    Write-Host -ForegroundColor Red "Subnet mask is not valid! Please choose a Class C subnet mask 24-29 and retry."
     exit 1
 }
 
+#- 5 addresses for Azure Reserved IPs
 if (($SubnetSizes[$SubnetMask] - 5) -lt $NumberOfVMs) {
-    Write-Host -ForegroundColor Red "The subnet is not big enough to create the number of VMs requested!"
+    Write-Host -ForegroundColor Red "The subnet is not big enough to create the number of VMs requested! Please choose a bigger subnet or smaller number of VMs and retry."
     exit
 }
-
-
-
 
 #Create a Resource Group
 Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Resource Group $ResourceGroupName ..."
