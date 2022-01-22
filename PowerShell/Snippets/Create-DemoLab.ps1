@@ -180,7 +180,7 @@ foreach($i in 1..$NumberOfVMs){
 
     Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating Public IP Address $i ..."
 
-    $publicIP = @{
+    $PublicIPinfo = @{
         Name = "pip-VM$i-DemoLab$Number"
         ResourceGroupName = $ResourceGroupName
         AllocationMethod = "Dynamic"
@@ -191,7 +191,7 @@ foreach($i in 1..$NumberOfVMs){
         }
     }
 
-    New-AzPublicIpAddress @publicIP
+    New-AzPublicIpAddress @PublicIPinfo
 
 
 
@@ -199,7 +199,7 @@ foreach($i in 1..$NumberOfVMs){
     
     Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating VM $i ..."
     
-    $VM = @{
+    $VMInfo = @{
         ResourceGroupName = $ResourceGroupName
         Location = $Location
         Name = "VM$i-DemoLab$Number"
@@ -211,36 +211,45 @@ foreach($i in 1..$NumberOfVMs){
         Credential = New-Object System.Management.Automation.PSCredential ($VMUser, $VMPassword);
     }
     
-    New-AzVM @VM -AsJob
+    New-AzVM @VMinfo -AsJob
 
 
 
     #Increase the counter
     $i++
 
+} #the end of the loop
+
+Write-Host -ForegroundColor Black -BackgroundColor Yellow "Collecting information about the VMs ..."
+
+$VMs = Get-AZVM -ResourceGroupName $ResourceGroupName
+
+
+#FIXME: If VMs not found, throw error
+
+
+
+
+foreach ($VM in $VMs) {
+
+    $PublicIPName = "pip-" + $VM.Name
+    $PublicIP = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PublicIPName
+
+    while ($($PublicIP.IpAddress) -eq "Not Assigned") {
+        
+        Write-Host -ForegroundColor Black -BackgroundColor Yellow "Waiting for Public IP Address to be assigned ..."
+        
+        Start-Sleep -Seconds 5
+        $PublicIP = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PublicIPName
+    }
+    
+    Write-Host -ForegroundColor Black -BackgroundColor White -NoNewline "Public IP for $($VM.Name) is "
+    Write-Host -ForegroundColor Black -BackgroundColor Cyan "$($PublicIP.IpAddress)"
+
 }
 
-#List Public IPs:
-Write-Host -ForegroundColor Yellow "Waiting for Public IPs to be assigned..."
-
-$PIP1 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP1Name
-$PIP2 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP2Name
-
-while (($($PIP1.IpAddress) -eq "Not Assigned") -or ($($PIP2.IpAddress) -eq "Not Assigned")) {
-
-    Write-Host -ForegroundColor Yellow "Public IP Addresses are not assigned yet..."
-
-    Start-Sleep -Seconds 5
-    $PIP1 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP1Name
-    $PIP2 = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PIP2Name
-}
-
-Write-Host -ForegroundColor Black -BackgroundColor Yellow -NoNewline "Public IP for $VM1Name is "
-Write-Host -ForegroundColor Black -BackgroundColor Cyan -NoNewline "$($PIP1.IpAddress)"
-Write-Host -ForegroundColor Black -BackgroundColor Yellow -NoNewline ", and for $VM2Name is "
-Write-Host -ForegroundColor Black -BackgroundColor Cyan "$($PIP2.IpAddress)"
-
-Write-Host -ForegroundColor Black -BackgroundColor Yellow -NoNewline "VM admin user name is "
-Write-Host -ForegroundColor Black -BackgroundColor Cyan -NoNewline "$VMUser"
-Write-Host -ForegroundColor Black -BackgroundColor Yellow -NoNewline " and the password from KeyVault is: "
-Write-Host -ForegroundColor Black -BackgroundColor Cyan "$(Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $VMUser -AsPlainText)"
+# Getting the VM password secret from KeyVault
+Write-Host -ForegroundColor Black -BackgroundColor White -NoNewline "VM admin user name for all VMs is "
+Write-Host -ForegroundColor Black -BackgroundColor Magenta -NoNewline "$VMUser"
+Write-Host -ForegroundColor Black -BackgroundColor White -NoNewline " and the password from KeyVault is: "
+Write-Host -ForegroundColor Black -BackgroundColor Magenta "$(Get-AzKeyVaultSecret -VaultName $KeyVaultName -Name $VMUser -AsPlainText)"
