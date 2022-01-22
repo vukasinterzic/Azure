@@ -1,16 +1,15 @@
 #Create a RG
 #Create KeyVault and Secret with VM login credentials
-#Create an Automation Account
+#Create an Automation Account and give it access to the KeyVault
 #Create a Virtual Network
 #Create a Subnet
 #Create a Public IP Address
-#Create a Virtual Machine x2 with the above created RG, Vnet, Subnet, Public IP Address, open port 3389
+#Create a Virtual Machines with the above created RG, Vnet, Subnet, Public IP Address, open port 3389
 
 
 #TODO: Add load balancer
 #TODO: Add a web app, open port 80 and 443, install IIS
-#FIXME: Add verifications and checks
-#TODO: Add variable number of VMs (that will affect number of VMs, Public IPs, and verify if the size of VNet/Subnet is enough)
+#FIXME: Add verifications and checks everywhere
 
 
 #Define variables
@@ -23,7 +22,7 @@ $KeyVaultName = "KeyVault-DemoLab$Number"
 $AutomationAccountName = "AutomationAccount-DemoLab$Number"
 $VirtualNetworkName = "vNet-DemoLab$Number"
 $SubnetName = "subnet1-DemoLab$Number"
-$NumberOfVMs = 300
+$NumberOfVMs = 500
 $VMSize = "Standard_B1ms"
 $VNetAddressPrefix = "10.0.$Number.0/24"
 $SubnetAddressPrefix = "10.0.$Number.0/27"
@@ -224,10 +223,11 @@ Write-Host -ForegroundColor Black -BackgroundColor Yellow "Collecting informatio
 
 $VMs = Get-AZVM -ResourceGroupName $ResourceGroupName
 
-
-#FIXME: If VMs not found, throw error
-
-
+while ($($VMs.Count) -lt $NumberOfVMs) {
+    Write-Host -ForegroundColor Black -BackgroundColor Yellow "Waiting for the VMs to be created ..."
+    $VMs = Get-AZVM -ResourceGroupName $ResourceGroupName
+    Start-Sleep -Seconds 10
+}
 
 
 foreach ($VM in $VMs) {
