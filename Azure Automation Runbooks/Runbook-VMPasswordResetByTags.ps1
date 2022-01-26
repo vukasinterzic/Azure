@@ -50,7 +50,9 @@ foreach ($Subscription in $Subscriptions) {
 
         $VMInfo = Get-AzVM -Name $VM.Name -ResourceGroupName $VM.ResourceGroupName
 
-        if ($VMInfo) {
+        $VMStatus = ($VMinfo.Statuses | Where-Object Code -like "*PowerState*").DisplayStatus
+
+        if ($VMStatus -eq "Running") {
 
             #Generate a new password
             $CharArray = "!@#$%^&*0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz!@#$%^&*".tochararray()
@@ -77,7 +79,7 @@ foreach ($Subscription in $Subscriptions) {
             $SecretsHolder += $secret
 
         } else {
-            Write-Output "VM $($VM.Name) not found."
+            Write-Output "VM ($VM.Name) is not running. Skipping..."
         }
 
     } #End of VMs in Subscription loop
