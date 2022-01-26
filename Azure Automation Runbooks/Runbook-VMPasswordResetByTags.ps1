@@ -48,18 +48,19 @@ foreach ($Subscription in $Subscriptions) {
 
         Write-Output "Processing VM $($VM.Name)..."
 
-        $VMInfo = Get-AzVM -Name $VM.Name -ResourceGroupName $VM.ResourceGroupName -Status
+        $VMStatus = Get-AzVM -Name $VM.Name -ResourceGroupName $VM.ResourceGroupName -Status
 
-        $VMStatus = ($VMinfo.Statuses | Where-Object Code -like "*PowerState*").DisplayStatus
+        if ($(($VMStatus.Statuses | Where-Object Code -like "*PowerState*").DisplayStatus) -eq "VM running") {
 
-        if ($VMStatus -eq "Running") {
-
+            #Get the VM info
+            $VMInfo = Get-AzVM -Name $VM.Name -ResourceGroupName $VM.ResourceGroupName
+            
             #Generate a new password
             $CharArray = "!@#$%^&*0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz!@#$%^&*".tochararray()
             $Password = ConvertTo-SecureString (($CharArray | Get-Random -Count 18) -join '') -AsPlainText -Force
 
             #Secret Name will be in the format of "VM Name - Admin User Name"
-            $KeyVaultSecretName = $VMInfo.Name + "-" + $VMInfo.OSProfile.AdminUsername
+            $KeyVaultSecretName = $VMinfo.Name + "-" + $VMInfo.OSProfile.AdminUsername
 
             $VMReset = @{
                 VMName = $VMInfo.Name
@@ -95,12 +96,16 @@ if ((Get-AzContext).Subscription.Name -ne $KeyVaultSubscriptionName) {
 }
 
 #Save password to KeyVault
-Write-Output "Saving passwords to KeyVault..."
-foreach ($s in $SecretsHolder) {
+if ($SecretsHolder) {
 
-    Write-Output "Saving secret $($s.SecretName)..."
-    Set-AzKeyVaultSecret -VaultName $KeyVaultName -SecretName $s.SecretName -SecretValue $s.SecretValue
+    Write-Output "Saving passwords to KeyVault..."
+    foreach ($s in $SecretsHolder) {
 
-}
+        Write-Output "Saving secret $($s.SecretName)..."
+        Set-AzKeyVaultSecret -VaultName $KeyVaultName -SecretName $s.SecretName -SecretValue $s.SecretValue
+
+    }
+
+} 
  
  Write-Output "Runbook completed."
