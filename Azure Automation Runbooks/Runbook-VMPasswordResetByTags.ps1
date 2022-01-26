@@ -48,7 +48,7 @@ foreach ($Subscription in $Subscriptions) {
 
         Write-Output "Processing VM $($VM.Name)..."
 
-        $VMInfo = Get-AzVM -Name $VM.Name -ResourceGroupName $VM.ResourceGroupName
+        $VMInfo = Get-AzVM -Name $VM.Name -ResourceGroupName $VM.ResourceGroupName -Status
 
         $VMStatus = ($VMinfo.Statuses | Where-Object Code -like "*PowerState*").DisplayStatus
 
