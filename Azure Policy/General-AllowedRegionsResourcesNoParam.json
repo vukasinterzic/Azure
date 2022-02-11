@@ -1,28 +1,44 @@
 {
-    "mode": "Indexed",
-    "policyRule": {
-      "if": {
+    "properties": {
+      "displayName": "Allowed locations for Azure resources",
+      "policyType": "Custom",
+      "mode": "All",
+      "description": "This policy enables you to restrict the locations your organization can create resources in. Use to enforce your geo-compliance requirements.",
+      "metadata": {
+        "version": "1.0.0",
+        "category": "Custom-AzureIs.Fun"
+      },
+      "parameters": {
+        "listOfAllowedLocations": {
+          "type": "Array",
+          "metadata": {
+            "description": "The list of locations that resources can be created in.",
+            "strongType": "location",
+            "displayName": "Allowed locations"
+          }
+        }
+      },
+      "policyRule": {
+        "if": {
         "allOf": [
-          {
+            {
             "field": "location",
-            "notIn": [
-              "westus2",
-              "westcentralus"
-            ]
-          },
-          {
+            "notIn": "[parameters('listOfAllowedLocations')]"
+            },
+            {
             "field": "location",
             "notEquals": "global"
-          },
-          {
+            },
+            {
             "field": "type",
             "notEquals": "Microsoft.AzureActiveDirectory/b2cDirectories"
-          }
+            }
         ]
-      },
-      "then": {
+        },
+        "then": {
         "effect": "deny"
+        }
       }
     },
-    "parameters": {}
+    "name": "Allowed Locations for Azure Resources"
   }
