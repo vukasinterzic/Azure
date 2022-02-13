@@ -6,6 +6,10 @@
 
 ### Allowed Region for all resources
 
+### Enable DoNotDelete Lock for Production Resource Groups
+
+### Enable Azure VM Backup for Production VMs
+
 <br><br>
 
 ## Naming Policy
