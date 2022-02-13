@@ -6,7 +6,7 @@
 
 ### Allowed Region for all resources
 
-<br><br><br>
+<br><br>
 
 ## Naming Policy
 
@@ -15,5 +15,5 @@
 ### Naming Policy for Virtual Machiens
 
 
-
+<br><br><br><br><br><br>
 #TODO: Create ARM templates, add Deploy To Azure button
