@@ -6,7 +6,7 @@
       "description": "Require multiple Tags on Resource Groups. Tag values are not checked.",
       "metadata": {
         "version": "1.0.0",
-        "category": "Tags"
+        "category": "Custom-AzureIs.Fun"
       },
       
         "policyRule": {

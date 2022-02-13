@@ -5,7 +5,7 @@
      "mode": "All",
      "description": "Deploy Resource Locks CanNotDelete to Resource Groups that have a Tag Environment with value Production",
      "metadata": {
-      "category": "Custom-Tags"
+      "category": "Custom-AzureIs.Fun"
      },
      "parameters": {},
      "policyRule": {
