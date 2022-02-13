@@ -6,7 +6,7 @@
       "description": "Require Tag with with one of the specific values",
       "metadata": {
         "version": "1.0.0",
-        "category": "General"
+        "category": "Tags"
       },
       
         "policyRule": {
