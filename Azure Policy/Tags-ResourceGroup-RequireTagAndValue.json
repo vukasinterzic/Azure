@@ -1,0 +1,55 @@
+{
+    "properties": {
+      "displayName": "Require Tag with specific value",
+      "policyType": "Custom",
+      "mode": "All",
+      "description": "Require Tag with with one of the specific values",
+      "metadata": {
+        "version": "1.0.0",
+        "category": "General"
+      },
+      
+        "policyRule": {
+            "if": {
+            "allOf": [
+                {
+                "field": "type",
+                "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+                },
+                {
+                "field": "name",
+                "notLike": "networkwatcherrg"
+                },
+                {
+                "field": "name",
+                "notLike": "AzureBackupRG*"
+                },
+                {
+                "field": "[concat('tags[', parameters('tagName'), ']')]",
+                "notIn": "[parameters('tagValue')]"
+                }
+            ]
+            },
+            "then": {
+            "effect": "deny"
+            }
+        },
+
+        "parameters": {
+            "tagName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Tag Name",
+                    "description": "Name of the tag, such as 'environment'"
+                }
+            },
+            "tagValue": {
+                "type": "Array",
+                "metadata": {
+                    "displayName": "Tag Values",
+                    "description": "Specify list of values that can be in the tag, such as: Prod;Dev;Test;Demo"
+                }
+            }
+        }
+    }
+}
