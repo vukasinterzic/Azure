@@ -1,0 +1,25 @@
+{
+    "properties": {
+     "displayName": "Prevent creating new Virtual Networks",
+     "policyType": "Custom",
+     "mode": "All",
+     "description": "This policy will forbid creating new Virtual Networks in environment",
+     "metadata": {
+      "category": "Custom-AzureIs.Fun"
+     },
+     "parameters": {},
+     "policyRule": {
+      "if": {
+       "allOf": [
+        {
+         "field": "type",
+         "equals": "Microsoft.Network/virtualNetworks"
+        }
+       ]
+      },
+      "then": {
+       "effect": "deny"
+      }
+     }
+    }
+}
