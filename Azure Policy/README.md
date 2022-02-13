@@ -2,7 +2,7 @@
 
 ## General Policy
 
-### Allowed Region for Resource Groups [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fvukasinterzic%2FAzure%2Fmaster%2FAzure%2520Policy%2FGeneral-AllowedRegionsResourceGroups.json)
+### Allowed Region for Resource Groups ![Deploy to Azure](https://aka.ms/deploytoazurebutton)
 
 ### Allowed Region for all resources ![Deploy to Azure](https://aka.ms/deploytoazurebutton)
 
