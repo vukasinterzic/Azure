@@ -2,14 +2,18 @@
 
 ## General Policy
 
-### Allowed Region for Resource Groups ![Deploy to Azure](https://aka.ms/deploytoazurebutton)
+### Allowed Region for Resource Groups
 
-### Allowed Region for all resources ![Deploy to Azure](https://aka.ms/deploytoazurebutton)
+### Allowed Region for all resources
 
 <br><br><br>
 
 ## Naming Policy
 
-### Naming Policy for Resource Groups ![Deploy to Azure](https://aka.ms/deploytoazurebutton)
+### Naming Policy for Resource Groups
 
-### Naming Policy for Virtual Machiens ![Deploy to Azure](https://aka.ms/deploytoazurebutton)
+### Naming Policy for Virtual Machiens
+
+
+
+#TODO: Create ARM templates, add Deploy To Azure button
