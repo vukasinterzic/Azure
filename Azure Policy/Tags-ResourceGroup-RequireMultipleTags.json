@@ -1,0 +1,52 @@
+{
+    "properties": {
+      "displayName": "Require Multiple Tags on Resource Groups",
+      "policyType": "Custom",
+      "mode": "All",
+      "description": "Require multiple Tags on Resource Groups. Tag values are not checked.",
+      "metadata": {
+        "version": "1.0.0",
+        "category": "Tags"
+      },
+      
+        "policyRule": {
+            "if": {
+            "allOf": [
+                {
+                "field": "type",
+                "equals": "Microsoft.Resources/subscriptions/resourceGroups"
+                },
+                {
+                "field": "name",
+                "notLike": "networkwatcherrg"
+                },
+                {
+                "field": "name",
+                "notLike": "AzureBackupRG*"
+                },
+                {
+                    "not": {
+                      "field": "[concat('tags[',parameters('Environment'), ']')]",
+                      "exists": "true"
+                    }
+                },
+                {
+                    "not": {
+                      "field": "[concat('tags[',parameters('Description'), ']')]",
+                      "exists": "true"
+                    }
+                },
+                {
+                    "not": {
+                      "field": "[concat('tags[',parameters('Technical-Owner'), ']')]",
+                      "exists": "true"
+                    }
+                }
+            ]
+            },
+            "then": {
+            "effect": "deny"
+            }
+        }
+    }
+}
