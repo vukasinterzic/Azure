@@ -1,0 +1,31 @@
+{
+    "properties": {
+     "displayName": "Append Created-On tag to all new resources",
+     "policyType": "Custom",
+     "mode": "All",
+     "description": "This policy will automatically add Tag Created-On to all new resources and it will contain the date of resource creation.",
+     "metadata": {
+      "category": "Custom-AzureIs.Fun"
+     },
+     "parameters": {},
+     "policyRule": {
+      "if": {
+       "allOf": [
+        {
+         "field": "tags['Created-On']",
+         "exists": "false"
+        }
+       ]
+      },
+      "then": {
+       "effect": "append",
+       "details": [
+        {
+         "field": "tags['Created-On']",
+         "value": "[utcNow()]"
+        }
+       ]
+      }
+     }
+    }
+}
