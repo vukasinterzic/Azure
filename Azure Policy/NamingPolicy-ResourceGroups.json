@@ -1,38 +1,45 @@
 {
-    "mode": "All",
-    "policyRule": {
-      "if": {
-        "allOf": [
-          {
-            "field": "type",
-            "equals": "Microsoft.Resources/subscriptions/resourceGroups"
-          },
-          {
-            "field": "name",
-            "notLike": "networkwatcherrg"
-          },
-          {
-            "field": "name",
-            "notLike": "AzureBackupRG*"
-          },
-          {
-            "field": "name",
-            "notLike": "RG-Prod-*"
-          },
-          {
-            "field": "name",
-            "notLike": "RG-Dev-*"
-          },
-          {
-            "field": "name",
-            "notLike": "RG-Test-*"
-          }
-        ]
+  "properties": {
+   "displayName": "NamingPolicy - ResourceGroups",
+   "policyType": "Custom",
+   "mode": "All",
+   "description": "This policy is used to enforce the naming policy for the Resource Groups",
+   "metadata": {
+    "category": "Custom-AzureIs.Fun"
+   },
+   "parameters": {},
+   "policyRule": {
+    "if": {
+     "allOf": [
+      {
+       "field": "type",
+       "equals": "Microsoft.Resources/subscriptions/resourceGroups"
       },
-      "then": {
-        "effect": "deny"
+      {
+       "field": "name",
+       "notLike": "networkwatcherrg"
+      },
+      {
+       "field": "name",
+       "notLike": "AzureBackupRG*"
+      },
+      {
+        "field": "name",
+        "notLike": "RG-Prod-*"
+      },
+      {
+        "field": "name",
+        "notLike": "RG-Dev-*"
+      },
+      {
+        "field": "name",
+        "notLike": "RG-Test-*"
       }
+     ]
     },
-    "parameters": {}
+    "then": {
+     "effect": "deny"
+    }
+   }
+  }
 }
-  
