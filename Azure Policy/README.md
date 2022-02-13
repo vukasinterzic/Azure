@@ -6,8 +6,10 @@
 
 ### Allowed Region for all resources ![Deploy to Azure](https://aka.ms/deploytoazurebutton)
 
+<br><br><br>
+
 ## Naming Policy
 
-## Naming Policy for Resource Groups ![Deploy to Azure](https://aka.ms/deploytoazurebutton)
+### Naming Policy for Resource Groups ![Deploy to Azure](https://aka.ms/deploytoazurebutton)
 
-## Naming Policy for Virtual Machiens ![Deploy to Azure](https://aka.ms/deploytoazurebutton)
+### Naming Policy for Virtual Machiens ![Deploy to Azure](https://aka.ms/deploytoazurebutton)
