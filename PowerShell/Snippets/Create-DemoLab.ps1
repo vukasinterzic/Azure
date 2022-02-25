@@ -248,6 +248,20 @@ foreach ($VM in $VMs) {
 
 }
 
+Write-Host -ForegroundColor Black -BackgroundColor Cyan  "Creating System Assigned Managed Identity for the first VM on the list ..."
+$VM = $VMs[0]
+
+Update-AzVM -ResourceGroupName $ResourceGroupName -VM $VM -IdentityType SystemAssigned
+
+Write-Host -ForegroundColor Black -BackgroundColor Cyan  "Assigning VM access to KeyVault ..."
+
+$VMSysIdentity = (Get-AzVM -Name $VM.Name -ResourceGroupName $ResourceGroupName).identity.principalid
+
+Set-AzKeyVaultAccessPolicy -VaultName $KeyVaultName -ObjectId $VMSysIdentity -PermissionsToSecrets list,get
+
+(Get-AzKeyVault -Name $KeyVaultName -ResourceGroupName $ResourceGroupName).AccessPolicies | where-object {$_.ObjectId -eq $VMSysIdentity}
+
+
 # Getting the VM password secret from KeyVault
 Write-Host -ForegroundColor Black -BackgroundColor White -NoNewline "VM admin user name for all VMs is "
 Write-Host -ForegroundColor Black -BackgroundColor Magenta -NoNewline "$VMUser"
