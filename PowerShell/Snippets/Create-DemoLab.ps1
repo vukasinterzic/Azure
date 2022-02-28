@@ -22,12 +22,16 @@ $KeyVaultName = "KeyVault-DemoLab$Number"
 $AutomationAccountName = "AutomationAccount-DemoLab$Number"
 $VirtualNetworkName = "vNet-DemoLab$Number"
 $SubnetName = "subnet1-DemoLab$Number"
-$NumberOfVMs = 2
+$NumberOfSrv2016VMs = 1
+$NumberOfWin10VMs = 1
+$NumberOfWin11VMs = 0
+$NumberOfVMs = $NumberOfSrv2016VMs + $NumberOfWin10VMs + $NumberOfWin11VMs
 $VMSize = "Standard_B1ms"
 $VNetAddressPrefix = "10.0.$Number.0/24"
 $SubnetAddressPrefix = "10.0.$Number.0/27"
 $VMUser = "labuser"
 $VMPassword = ConvertTo-SecureString "Hello$(Get-Random -Minimum 10000)!" -AsPlainText -Force
+
 
 
 $Tags = @{
