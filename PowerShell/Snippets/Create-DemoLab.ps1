@@ -14,6 +14,7 @@
 #FIXME: Add verifications and checks everywhere
 #FIXME: Add option to create a new RG or use an existing one
 #FIXME: Add option to enable logging
+#TODO: Create 2 functions: Create-DemoLab, Remove-DemoLab
 
 #Define variables
 
