@@ -27,7 +27,7 @@ $SubnetName = "subnet1-DemoLab$Number"
 $NumberOfSrv2016VMs = 0
 $NumberOfSrv2019VMs = 0
 $NumberOfUbuntuVMs = 0
-$NumberOfWin10VMs = 1
+$NumberOfWin10VMs = 2
 $NumberOfVMs = $NumberOfSrv2016VMs + $NumberOfSrv2019VMs + $NumberOfUbuntuVMs + $NumberOfWin10VMs
 $VMSize = "Standard_B2ms"
 $VNetAddressPrefix = "10.0.$Number.0/24"
@@ -268,7 +268,8 @@ while ($($VMs.Count) -lt $NumberOfVMs) {
 
 foreach ($VM in $VMs) {
 
-    $PublicIPName = "pip-" + $VM.Name
+    $VMID = $($VM.Name).Split("-")[0]
+    $PublicIPName = "pip-$VMID-DemoLab$Number"
     $PublicIP = Get-AzPublicIpAddress -ResourceGroupName $ResourceGroupName -Name $PublicIPName
 
     while ($($PublicIP.IpAddress) -eq "Not Assigned") {
