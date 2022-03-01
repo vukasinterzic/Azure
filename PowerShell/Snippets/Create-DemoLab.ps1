@@ -191,7 +191,7 @@ foreach($i in 1..$NumberOfVMs){
         Location = $Location
         Sku = "Basic"
         Tag = @{
-            VMName = "VM$i-DemoLab$Number"
+            VMNumber = "VM$i"
         }
     }
 
@@ -235,7 +235,7 @@ foreach($i in 1..$NumberOfVMs){
     $VMInfo = @{
         ResourceGroupName = $ResourceGroupName
         Location = $Location
-        Name = "VM$i-$OSName$Number"
+        Name = "VM$i-$OSName-$Number"
         VirtualNetworkName = $VirtualNetworkName
         SubnetName = $SubnetName
         PublicIpAddressName = "pip-VM$i-DemoLab$Number"
