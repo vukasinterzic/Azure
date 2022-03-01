@@ -5,14 +5,15 @@
 #Create a Subnet
 #Create a Public IP Address
 #Create a Virtual Machines with the above created RG, Vnet, Subnet, Public IP Address, open port 3389
-
-
+#Create a System Assigned Managed Identity for VM1 and allow access to KeyVault
 
 
 #TODO: Move Management Identity creation and assignment to the bottom of the script. Policy for Automation and VM should be created together.
 #TODO: Add load balancer
 #TODO: Add a web app, open port 80 and 443, install IIS
 #FIXME: Add verifications and checks everywhere
+#FIXME: Add option to create a new RG or use an existing one
+#FIXME: Add option to enable logging
 
 #Define variables
 
