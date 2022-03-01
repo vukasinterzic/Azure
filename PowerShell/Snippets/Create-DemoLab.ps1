@@ -15,9 +15,11 @@
 #FIXME: Add option to create a new RG or use an existing one
 #FIXME: Add option to enable logging
 #TODO: Create 2 functions: Create-DemoLab, Remove-DemoLab
+#TODO: Add timestamp
 
 #Define variables
 
+$Version = "0.4"
 $Number = Get-Random -Minimum 1 -Maximum 254
 $Location = "westus2"
 $SubscriptionName = "Microsoft Azure Sponsorship"
@@ -59,7 +61,7 @@ if ((Get-AzContext).Subscription.Name -ne $SubscriptionName) {
 
 #FIXME: If subscription selection not success, throw error
 
-
+Write-Host -ForegroundColor Green "Script version $Version"
 
 Write-Host -BackgroundColor Magenta -ForegroundColor White "Checking if subnet mask is valid and if requested number of VMs will fit in the subnet..."
 
