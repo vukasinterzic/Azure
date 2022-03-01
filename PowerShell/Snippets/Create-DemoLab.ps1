@@ -8,24 +8,10 @@
 
 
 
-Get-AzVMImagePublisher -Location $Location
-
-#MicrosoftWindowsDesktop
-#MicrosoftWindowsServer
-#techlatest
-#Canonical -> UbuntuServer
-
-
 
 #TODO: Add load balancer
 #TODO: Add a web app, open port 80 and 443, install IIS
 #FIXME: Add verifications and checks everywhere
-
-#Friendly names: Win2019Datacenter, Win2016Datacenter, Win2012R2Datacenter, Win2012Datacenter, Win2008R2SP1, UbuntuLTS, CentOS, CoreOS, Debian, openSUSE-Leap, RHEL, SLES.
-
-
-UbuntuLTS
-
 
 #Define variables
 
@@ -37,13 +23,11 @@ $KeyVaultName = "KeyVault-DemoLab$Number"
 $AutomationAccountName = "AutomationAccount-DemoLab$Number"
 $VirtualNetworkName = "vNet-DemoLab$Number"
 $SubnetName = "subnet1-DemoLab$Number"
-$NumberOfSrv2016VMs = 1
-$NumberOfSrv2019VMs = 0
-$NumberOfSrv2022VMs = 0
-$NumberOfUbuntuVMs = 0
-$NumberOfWin10VMs = 1
-$NumberOfWin11VMs = 0
-$NumberOfVMs = $NumberOfSrv2016VMs + $NumberOfSrv2019VMs + $NumberOfSrv2022VMs + $NumberOfUbuntuVMs + $NumberOfWin10VMs + $NumberOfWin11VMs
+$NumberOfSrv2016VMs = 2
+$NumberOfSrv2019VMs = 1
+$NumberOfUbuntuVMs = 1
+$NumberOfWin10VMs = 2
+$NumberOfVMs = $NumberOfSrv2016VMs + $NumberOfSrv2019VMs + $NumberOfUbuntuVMs + $NumberOfWin10VMs
 $VMSize = "Standard_B1ms"
 $VNetAddressPrefix = "10.0.$Number.0/24"
 $SubnetAddressPrefix = "10.0.$Number.0/27"
@@ -217,14 +201,45 @@ foreach($i in 1..$NumberOfVMs){
     
     Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating VM $i ..."
     
+    if ($NumberOfSrv2016VMs -gt 0) {
+        
+        Write-Host -ForegroundColor Black -BackgroundColor Cyan "VM Image is Windows Server 2016 Datacenter"
+        $ImageName = "Win2016Datacenter"
+        $OSName = "WS2016"
+        $NumberOfSrv2016VMs = $NumberOfSrv2016VMs - 1
+    
+    } elseif ($NumberOfSrv2019VMs -gt 0) {
+    
+        Write-Host -ForegroundColor Black -BackgroundColor Cyan "VM Image is Windows Server 2019 Datacenter"
+        $ImageName = "Win2019Datacenter"
+        $OSName = "WS2019"
+        $NumberOfSrv2019VMs = $NumberOfSrv2019VMs - 1
+    
+    } elseif ($NumberOfUbuntuVMs -gt 0) {
+
+        Write-Host -ForegroundColor Black -BackgroundColor Cyan "VM Image is Ubuntu LTS"
+        $ImageName = "UbuntuLTS"
+        $OSname = "Ubuntu"
+        $NumberOfUbuntuVMs = $NumberOfUbuntuVMs - 1
+
+    } elseif ($NumberOfWin10VMs -gt 0) {
+
+        Write-Host -ForegroundColor Black -BackgroundColor Cyan "VM Image is Windows 10"
+        $ImageName = "Win10"
+        $OSName = "Win10"
+        $NumberOfWin10VMs = $NumberOfWin10VMs - 1
+
+    }
+
+
     $VMInfo = @{
         ResourceGroupName = $ResourceGroupName
         Location = $Location
-        Name = "VM$i-DemoLab$Number"
+        Name = "VM$i-$OSName$Number"
         VirtualNetworkName = $VirtualNetworkName
         SubnetName = $SubnetName
         PublicIpAddressName = "pip-VM$i-DemoLab$Number"
-        Image = "Windows-11"
+        Image = $ImageName
         Size = $VMSize
         OpenPorts = "3389"
         Credential = New-Object System.Management.Automation.PSCredential ($VMUser, $VMPassword);
