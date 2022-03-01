@@ -28,7 +28,7 @@ $NumberOfSrv2019VMs = 1
 $NumberOfUbuntuVMs = 1
 $NumberOfWin10VMs = 2
 $NumberOfVMs = $NumberOfSrv2016VMs + $NumberOfSrv2019VMs + $NumberOfUbuntuVMs + $NumberOfWin10VMs
-$VMSize = "Standard_B1ms"
+$VMSize = "Standard_B2ms"
 $VNetAddressPrefix = "10.0.$Number.0/24"
 $SubnetAddressPrefix = "10.0.$Number.0/27"
 $VMUser = "labuser"
@@ -225,7 +225,7 @@ foreach($i in 1..$NumberOfVMs){
     } elseif ($NumberOfWin10VMs -gt 0) {
 
         Write-Host -ForegroundColor Black -BackgroundColor Cyan "VM Image is Windows 10"
-        $ImageName = "Win10"
+        $ImageName = "MicrosoftWindowsDesktop:Windows-10:win10-21h2-ent:latest"
         $OSName = "Win10"
         $NumberOfWin10VMs = $NumberOfWin10VMs - 1
 
