@@ -9,6 +9,7 @@
 
 
 
+#TODO: Move Management Identity creation and assignment to the bottom of the script. Policy for Automation and VM should be created together.
 #TODO: Add load balancer
 #TODO: Add a web app, open port 80 and 443, install IIS
 #FIXME: Add verifications and checks everywhere
