@@ -7,9 +7,24 @@
 #Create a Virtual Machines with the above created RG, Vnet, Subnet, Public IP Address, open port 3389
 
 
+
+Get-AzVMImagePublisher -Location $Location
+
+#MicrosoftWindowsDesktop
+#MicrosoftWindowsServer
+#techlatest
+#Canonical -> UbuntuServer
+
+
+
 #TODO: Add load balancer
 #TODO: Add a web app, open port 80 and 443, install IIS
 #FIXME: Add verifications and checks everywhere
+
+#Friendly names: Win2019Datacenter, Win2016Datacenter, Win2012R2Datacenter, Win2012Datacenter, Win2008R2SP1, UbuntuLTS, CentOS, CoreOS, Debian, openSUSE-Leap, RHEL, SLES.
+
+
+UbuntuLTS
 
 
 #Define variables
@@ -23,15 +38,17 @@ $AutomationAccountName = "AutomationAccount-DemoLab$Number"
 $VirtualNetworkName = "vNet-DemoLab$Number"
 $SubnetName = "subnet1-DemoLab$Number"
 $NumberOfSrv2016VMs = 1
+$NumberOfSrv2019VMs = 0
+$NumberOfSrv2022VMs = 0
+$NumberOfUbuntuVMs = 0
 $NumberOfWin10VMs = 1
 $NumberOfWin11VMs = 0
-$NumberOfVMs = $NumberOfSrv2016VMs + $NumberOfWin10VMs + $NumberOfWin11VMs
+$NumberOfVMs = $NumberOfSrv2016VMs + $NumberOfSrv2019VMs + $NumberOfSrv2022VMs + $NumberOfUbuntuVMs + $NumberOfWin10VMs + $NumberOfWin11VMs
 $VMSize = "Standard_B1ms"
 $VNetAddressPrefix = "10.0.$Number.0/24"
 $SubnetAddressPrefix = "10.0.$Number.0/27"
 $VMUser = "labuser"
 $VMPassword = ConvertTo-SecureString "Hello$(Get-Random -Minimum 10000)!" -AsPlainText -Force
-
 
 
 $Tags = @{
@@ -196,8 +213,6 @@ foreach($i in 1..$NumberOfVMs){
 
     New-AzPublicIpAddress @PublicIPinfo
 
-
-
     #Create a VM
     
     Write-Host -ForegroundColor Black -BackgroundColor Cyan "Creating VM $i ..."
@@ -209,6 +224,7 @@ foreach($i in 1..$NumberOfVMs){
         VirtualNetworkName = $VirtualNetworkName
         SubnetName = $SubnetName
         PublicIpAddressName = "pip-VM$i-DemoLab$Number"
+        Image = "Windows-11"
         Size = $VMSize
         OpenPorts = "3389"
         Credential = New-Object System.Management.Automation.PSCredential ($VMUser, $VMPassword);
