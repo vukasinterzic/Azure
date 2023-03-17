@@ -1,3 +1,8 @@
+<#
+This script is explained in this blog post:
+https://azureis.fun/posts/Edit-Azure-Policy-Assignments-with-custom-PowerShell-API/
+#>
+
 
 function Update-PolicyAssignmentExclusionList {
     [CmdletBinding()]
