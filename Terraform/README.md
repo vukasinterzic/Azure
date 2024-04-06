@@ -1,1 +1,1 @@
-This Repo contains Terraform Azure IaaC files.
+Content moved to [this repo](https://github.com/vukasinterzic/Terraform).
